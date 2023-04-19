@@ -3,9 +3,14 @@
 
    
     class Usuario{
-
+        private $nome;
+        private $sobrenome;
+        private $usuario;
+        private $email;
         private $login;
         private $senha;
+        private $confi_senha;
+        
     
         public function __set($atributo, $valor)
         {
@@ -26,29 +31,25 @@
         {
         }
 
+        function autenticar($nome,$sobrenome,$usuario,$email,$login, $senha,$confi_senha){
+            $database = new Database();
+            $con = $database->connect();
+            
+            $sql = "SELECT  id , login FROM usuario WHERE login = :login AND senha = :senha";
 
-     
+            $st = $con->prepare($sql);
+            $st->bindParam(':login', $login);
+            $st->bindParam(':senha', $senha);
+            $retorno = $st->execute();
+            $dados = $st->fetchAll();
 
-        function autenticar($login, $senha){
-         
-        $database = new Database();
-        $con = $database->connect();
+            if(sizeof($dados) ==1){
+            return true;
+            }
+            else{
+                echo false;
+            }
         
-        
-        $sql = "SELECT  id , login FROM usuario WHERE login = :login AND senha = :senha";
-
-        $st = $con->prepare($sql);
-        $st->bindParam(':login', $login);
-        $st->bindParam(':senha', $senha);
-        $retorno = $st->execute();
-        $dados = $st->fetchAll();
-        if(sizeof($dados) ==1){
-            header("location:principal.php");
-        }
-        else{
-            echo "false";
-        }
-    
         }
 
     }   
